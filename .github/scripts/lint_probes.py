@@ -21,9 +21,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PROBES_DIR = REPO_ROOT / "probes"
 RUBRICS_DIR = REPO_ROOT / "rubrics"
 
-REQUIRED_FIELDS = {"id", "name", "category", "target_class", "prompts", "mappings",
-                   "judge_model", "judge_rubric_path"}
+REQUIRED_FIELDS = {"id", "name", "attack_class", "target_class", "severity", "prompts", "mappings", "judge"}
 REQUIRED_MAPPING_KEYS = {"atlas", "owasp_llm", "nist_ai_rmf", "eu_ai_act"}
+REQUIRED_JUDGE_KEYS = {"model", "rubric_path"}
 
 
 def main() -> int:
@@ -70,20 +70,34 @@ def main() -> int:
                 if not isinstance(mappings[key], list):
                     errors.append(f"{rel}: mappings.{key} must be a list (got {type(mappings[key]).__name__})")
 
-        # prompts non-empty
+        # attack_class non-empty list
+        attack_class = doc.get("attack_class")
+        if not isinstance(attack_class, list) or len(attack_class) == 0:
+            errors.append(f"{rel}: attack_class must be a non-empty list")
+
+        # prompts non-empty list
         prompts = doc.get("prompts")
         if not isinstance(prompts, list) or len(prompts) == 0:
             errors.append(f"{rel}: prompts must be a non-empty list")
 
-        # judge_rubric_path resolves
-        rubric_path_str = doc.get("judge_rubric_path", "")
-        if rubric_path_str:
-            rel_rubric = rubric_path_str
-            if rel_rubric.startswith("rubrics/"):
-                rel_rubric = rel_rubric[len("rubrics/"):]
-            full_path = RUBRICS_DIR / rel_rubric
-            if not full_path.is_file():
-                errors.append(f"{rel}: judge_rubric_path {rubric_path_str!r} does not resolve to file at {full_path}")
+        # judge nested object with model + rubric_path
+        judge = doc.get("judge")
+        if not isinstance(judge, dict):
+            errors.append(f"{rel}: judge must be a mapping with model + rubric_path")
+        else:
+            missing_judge = REQUIRED_JUDGE_KEYS - set(judge.keys())
+            if missing_judge:
+                errors.append(f"{rel}: judge missing keys: {sorted(missing_judge)}")
+
+            # judge.rubric_path resolves
+            rubric_path_str = judge.get("rubric_path", "")
+            if rubric_path_str:
+                rel_rubric = rubric_path_str
+                if rel_rubric.startswith("rubrics/"):
+                    rel_rubric = rel_rubric[len("rubrics/"):]
+                full_path = RUBRICS_DIR / rel_rubric
+                if not full_path.is_file():
+                    errors.append(f"{rel}: judge.rubric_path {rubric_path_str!r} does not resolve to file at {full_path}")
 
     if errors:
         print(f"❌ {len(errors)} probe lint errors:", file=sys.stderr)
