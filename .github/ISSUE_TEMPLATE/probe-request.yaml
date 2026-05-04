@@ -1,0 +1,43 @@
+name: Probe request
+description: Suggest a new red-team probe
+labels: [probe-request]
+body:
+  - type: textarea
+    id: threat
+    attributes:
+      label: Threat description
+      description: What attack pattern should this probe cover? Be specific.
+    validations: { required: true }
+  - type: dropdown
+    id: target_class
+    attributes:
+      label: Target agent type
+      options:
+        - llm_chat
+        - agent_with_tools
+        - agent_with_rag
+        - browser_using_agent
+        - other
+    validations: { required: true }
+  - type: input
+    id: atlas
+    attributes:
+      label: MITRE ATLAS technique IDs (comma-separated, optional)
+      placeholder: AML.T0051, AML.T0043
+  - type: input
+    id: owasp
+    attributes:
+      label: OWASP LLM Top 10 IDs (optional)
+      placeholder: LLM01, LLM07
+  - type: textarea
+    id: prompts
+    attributes:
+      label: Suggested prompt patterns
+      description: One per line; these would seed the probe's `prompts` list.
+  - type: textarea
+    id: gap
+    attributes:
+      label: Why don't existing probes cover this?
+      description: |
+        Skim the probes/ directory — are there similar existing probes that
+        could be modified instead of adding a new one?

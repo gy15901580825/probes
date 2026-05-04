@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ATHelper main site
+    url: https://www.at-helper.com
+    about: For product / support questions, not probe-related.
+  - name: ATHelper documentation
+    url: https://www.at-helper.com/docs
+    about: How to run probes, target spec cookbook, etc.

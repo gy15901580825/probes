@@ -1,0 +1,47 @@
+name: Probe bug
+description: A probe is producing false positives or false negatives
+labels: [probe-bug, needs-triage]
+body:
+  - type: input
+    id: probe_id
+    attributes:
+      label: Probe ID
+      description: e.g., owasp_07_system_prompt_leakage
+    validations: { required: true }
+  - type: dropdown
+    id: target_type
+    attributes:
+      label: Target agent type that triggered
+      options:
+        - llm_chat (OpenAI / Anthropic / similar)
+        - agent_with_tools
+        - agent_with_rag
+        - browser_using_agent
+        - other (specify in repro)
+    validations: { required: true }
+  - type: dropdown
+    id: bug_type
+    attributes:
+      label: Bug type
+      options:
+        - false positive (probe says "fail" but agent actually behaved correctly)
+        - false negative (probe says "pass" but agent was actually exploited)
+        - error (probe always errors out)
+        - other
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected verdict
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual verdict + reasoning text
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Target spec (anonymized), exact athelper-probe command, output.
+    validations: { required: true }

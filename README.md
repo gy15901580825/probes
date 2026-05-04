@@ -4,11 +4,6 @@ OSS probe library extracted from [ATHelper](https://at-helper.com), the AI-agent
 red-team CLI / SaaS. 145 probes mapped to **MITRE ATLAS / OWASP LLM Top 10 /
 NIST AI RMF / EU AI Act**.
 
-> ⚠️ **Repo placeholder location**: this repo currently lives under
-> `gy15901580825/probes` while we provision the canonical
-> `athelper-research/probes` GitHub organization. Once the org exists the repo
-> will be transferred and `git remote set-url` instructions will land here.
-
 ## Counts
 
 | Category | Count | Source |
@@ -51,6 +46,12 @@ judge_rubric_path: rubrics/jailbreak.md
 Iterative probes (TAP/PAIR/GCG) and browser-use probes (with `scenario:` block)
 are loaded by the closed-source ATHelper orchestrator runtime; this repo carries
 only the static metadata.
+
+## Contributing
+
+We welcome new probes! See [CONTRIBUTING.md](./CONTRIBUTING.md) for the submission
+flow and [SCHEMA.md](./SCHEMA.md) for the probe YAML schema. Issue templates for
+probe requests and bug reports are configured.
 
 ## Usage
 
